@@ -18,6 +18,7 @@ library('CAlbicansR')
 ```R
 genesList <- c("EFG1","WOR1","WOR2")
 temp <- nameToOrf(genesList)
+
 print(temp)
 EFG1         WOR1         WOR2 
  "orf19.610" "orf19.4884" "orf19.5992"
@@ -28,6 +29,7 @@ EFG1         WOR1         WOR2
 ```R
 orfList <- c("orf19.610","orf19.4884","orf19.5992")
 temp <- orfToName(orfList)
+
 print(temp)
 orf19.610 orf19.4884 orf19.5992 
     "EFG1"     "WOR1"     "WOR2" 
@@ -39,6 +41,7 @@ orf19.610 orf19.4884 orf19.5992
 geneList <- c("orf19.610","orf19.4884","orf19.5992","WOR3","AHR1","CZF1")
 ontologyType <- "P"   ### P for Process, F for Function, and C for Component
 temp <- runGOEnrichment(geneList, ontologyType)
+
 print(temp)
 ```
 | Gene Ontology term | Corrected P-value |
