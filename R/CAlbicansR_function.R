@@ -1,0 +1,90 @@
+library("RSelenium")
+
+#' nameToOrf Function
+#' 
+#' This function access a pre-processed local database to convert
+#' gene names to orf19 values.
+#' @param genesList Object of class "vector"
+#' @export
+#' @examples 
+#' genesList <- c("EFG1","WOR1","WOR2")
+#' nameToOrf(genesList)
+nameToOrf <- function(genesList){
+  genesList <- toupper(genesList)
+  return(db.nameToOrf[genesList])
+}
+
+#' orfToName Function
+#' 
+#' This function access a pre-processed local database to convert
+#' orf19 values to gene names
+#' @param orfList Object of class "vector"
+#' @export
+#' @examples 
+#' orfList <- c("orf19.610","orf19.4884","orf19.5992")
+#' nameToOrf(orfList)
+orfToName <- function(orfList){
+  return(db.orfToName[orfList])
+}
+
+#' runGOEnrichment Function
+#' 
+#' This function uses an RSelenium wrapper to access the CGD
+#' GO Term Finder site, run the search, and download results with
+#' corrected p-values.
+#' @param geneList Object of class "vector". Should contain list of desired genes to be searched.
+#' @param type Object of class "character". Type of ontology: P for Process, F for Function, C for Component. Defaults to P.
+#' @param server Object of class "character". Users are encouraged to setup a local RSelenium instance. Defaults to a remote server.
+#' @param port Object of class "integer". Defaults to port 4445.
+#' @export
+#' @examples 
+#' geneList <- c("orf19.610","orf19.4884","orf19.5992","WOR3","AHR1","CZF1")
+#' runGOEnrichment(geneList,type='F')
+runGOEnrichment <- function(geneList=NULL,type='P',
+                             server='selenium.joshuawang.com',
+                             port=4445){
+  if(length(geneList)<2){
+    stop("Please enter more than 2 genes.")
+  }
+  
+  type <- toupper(type)
+  
+  message(paste0('Opening Browser Connection: ',server,":",port))
+  mybrowser <- remoteDriver(remoteServerAddr=server,port=port)
+  capture.output(mybrowser$open(),file='blank')
+  mybrowser$navigate("http://candidagenome.org/cgi-bin/GO/goTermFinder")
+  
+  message('Inputting Gene List')
+  genesList <- sapply(geneList,function(x){paste0(x," ")})
+  names(genesList) <- NULL
+  textarea <- mybrowser$findElement(using='css selector','textarea')
+  textarea$sendKeysToElement(genesList)
+  
+  if(type=='F'){
+    radio <- mybrowser$findElement(using='xpath','//label[(((count(preceding-sibling::*) + 1) = 3) and parent::*)]')
+    radio$clickElement()
+  }else if(type=='C'){
+    radio <- mybrowser$findElement(using='xpath','//b//label[(((count(preceding-sibling::*) + 1) = 5) and parent::*)]')
+    radio$clickElement()
+  }
+  
+  message("Executing Search")
+  button <- mybrowser$findElement(using='xpath','//*[(@id = "paddedtbl") and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//input[(((count(preceding-sibling::*) + 1) = 1) and parent::*)]')
+  button$sendKeysToElement(list("\uE007"))
+  
+  table <- try(mybrowser$findElement(using='xpath','//*[(@id = "paddedtbl")]'))
+  message("Cleaning Output")
+  if(typeof(table)=="S4"){
+    goTerms <- unlist(strsplit(table$getElementText()[[1]],split="\n"))
+    goTerms <- goTerms[3:length(goTerms)]
+    names <- sapply(goTerms,function(x){strsplit(x,split=" \\|")[[1]][1]})
+    pValues <- as.numeric(sapply(goTerms,function(x){strsplit(strsplit(x,split=", ")[[1]][3],split=" ")[[1]][2]}))
+    names(pValues) <- names
+  }else{
+    pValues <- NULL
+  }
+  
+  mybrowser$close()
+  
+  return(pValues)
+}

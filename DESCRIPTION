@@ -1,0 +1,11 @@
+Package: CAlbicansR
+Title: R wrapper to run CGD Gene Ontology Term Finder
+Version: 1.0.0
+Authors: Joshua Wang <joshuamwang@gmail.com>
+Maintainer: Matt Anderson <anderson.3196@osu.edu>
+Description: RSelenium wrapper to run GO Term Annotations directly from the Candida Genome Database website.
+Depends: R (>= 3.0), RSelenium(>= 1.7.1)
+License: GPL (>=3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
