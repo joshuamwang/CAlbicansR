@@ -43,7 +43,7 @@ orfToName <- function(orfList){
 runGOEnrichment <- function(geneList=NULL,type='P',
                              server='selenium.joshuawang.com',
                              port=4445){
-  if(length(geneList)<3){
+  if(length(geneList)<2){
     #stop("Please enter more than 2 genes.")
     return(NULL)
   }
@@ -73,7 +73,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   button <- mybrowser$findElement(using='xpath','//*[(@id = "paddedtbl") and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//input[(((count(preceding-sibling::*) + 1) = 1) and parent::*)]')
   button$sendKeysToElement(list("\uE007"))
   
-  table <- try(mybrowser$findElement(using='xpath','//*[(@id = "paddedtbl")]'))
+  table <- suppressMessages(try(mybrowser$findElement(using='xpath','//*[(@id = "paddedtbl")]'),silent=T))
   message("Cleaning Output")
   if(typeof(table)=="S4"){
     goTerms <- unlist(strsplit(table$getElementText()[[1]],split="\n"))
