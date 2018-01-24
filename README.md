@@ -8,7 +8,7 @@ This is an [R](https://www.r-project.org/) library to analyze biological dataset
 ```R
 install.packages('devtools')
 library('devtools')
-devtools::install_github('joshuamwang/CAlbicansR')
+devtools::install_github('CAlbicansR', 'joshuamwang')
 library('CAlbicansR')
 ```
 
