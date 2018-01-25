@@ -44,8 +44,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
                              server='selenium.joshuawang.com',
                              port=4445){
   if(length(geneList)<2){
-    #stop("Please enter more than 2 genes.")
-    return(NULL)
+    stop("Please enter at least 2 genes.")
   }
   
   type <- toupper(type)
@@ -53,7 +52,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   message(paste0('Opening Browser Connection: ',server,":",port))
   mybrowser <- remoteDriver(remoteServerAddr=server,port=port)
   capture.output(mybrowser$open(),file='blank')
-  mybrowser$navigate("http://candidagenome.org/cgi-bin/GO/goTermFinder")
+  mybrowser$navigate("http://www.candidagenome.org/cgi-bin/GO/goTermFinder")
   
   message('Inputting Gene List')
   genesList <- sapply(geneList,function(x){paste0(x," ")})
@@ -70,11 +69,30 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   }
   
   message("Executing Search")
+  #button <- mybrowser$findElement(using='name','Submit')
+  #button$sendKeysToElement(list("\uE007"))
   button <- mybrowser$findElement(using='xpath','//*[(@id = "paddedtbl") and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//input[(((count(preceding-sibling::*) + 1) = 1) and parent::*)]')
   button$sendKeysToElement(list("\uE007"))
   
+  message("Waiting for Results")
+  #couldn't get implicit timeout to work, causes Selenium Server to time out
+  #and remove session
+  #mybrowser$setTimeout(type='implicit',milliseconds = 1200000)
+  #temp <- suppressMessages(try(mybrowser$findElement(using='css selector','p font'),silent=T))
+  #mybrowser$setTimeout(type='implicit',milliseconds = 0)
+  
+  #artificial method to hold script until final results page loads, with max timeout of 10 minutes.
+  pageLoad <- FALSE
+  while(pageLoad==FALSE){
+    Sys.sleep(5)
+    temp <- suppressMessages(try(mybrowser$findElement(using='css selector','p font'),silent=T))
+    if(class(temp)!="try-error"){
+      pageLoad <- TRUE
+    }
+  }
+  
   table <- suppressMessages(try(mybrowser$findElement(using='xpath','//*[(@id = "paddedtbl")]'),silent=T))
-  message("Cleaning Output")
+  message("Cleaning Results")
   if(typeof(table)=="S4"){
     goTerms <- unlist(strsplit(table$getElementText()[[1]],split="\n"))
     goTerms <- goTerms[3:length(goTerms)]
