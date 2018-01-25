@@ -44,7 +44,8 @@ runGOEnrichment <- function(geneList=NULL,type='P',
                              server='selenium.joshuawang.com',
                              port=4445){
   if(length(geneList)<2){
-    stop("Please enter at least 2 genes.")
+    return(NULL)
+    #stop("Please enter at least 2 genes.")
   }
   
   type <- toupper(type)
