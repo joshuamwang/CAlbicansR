@@ -56,7 +56,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   mybrowser$navigate("http://www.candidagenome.org/cgi-bin/GO/goTermFinder")
   
   message('Inputting Gene List')
-  genesList <- sapply(geneList2,function(x){paste0(x," ")})
+  genesList <- sapply(geneList,function(x){paste0(x," ")})
   names(genesList) <- NULL
   textarea <- mybrowser$findElement(using='css selector','textarea')
   textarea$sendKeysToElement(genesList)
@@ -89,11 +89,11 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   
   message("Waiting for Results")
   
-  # method below is for standalone-firefox - soft ping session every 15 seconds
+  # method below is for standalone-firefox - soft ping session every 10 seconds
   #to check if final page has reloaded + prevent session from timing out.
   pageLoad <- FALSE
   while(pageLoad==FALSE){
-    Sys.sleep(15)
+    Sys.sleep(10)
     temp <- suppressMessages(try(mybrowser$findElement(using='css selector','p font'),silent=T))
     if(class(temp)!="try-error"){
       pageLoad <- TRUE
