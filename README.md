@@ -11,6 +11,16 @@ library('devtools')
 devtools::install_github('joshuamwang/CAlbicansR')
 library('CAlbicansR')
 ```
+**Optional**: Users are encouraged to run a local instance of [Selenium](http://docs.seleniumhq.org/). Specifically, this R library was tested with [selenium/standalone-firefox-debug](https://hub.docker.com/r/selenium/standalone-firefox-debug/) which can be pulled from docker and executed as follows:
+
+```bash
+# to pull from docker & install
+sudo docker pull selenium/standalone-firefox-debug
+
+# to execute
+sudo docker run -d -p 4445:4444 -p 5901:5900 -v /dev/shm:/dev/shm selenium/standalone-firefox-debug
+```
+This configuration binds the [Selenium](http://docs.seleniumhq.org/) port to 4445 and allows for [VNC viewer](https://www.realvnc.com/en/connect/download/viewer/) access for debugging on port 5901. More information on debugging [Selenium](http://docs.seleniumhq.org/) with [VNC viewer](https://www.realvnc.com/en/connect/download/viewer/) is available [here](https://github.com/SeleniumHQ/docker-selenium#debugging). 
 
 ## Usage
 
