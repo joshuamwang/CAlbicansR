@@ -51,12 +51,12 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   type <- toupper(type)
   
   message(paste0('Opening Browser Connection: ',server,":",port))
-  mybrowser <- remoteDriver(remoteServerAddr=server,port=port)
+  mybrowser <- remoteDriver(remoteServerAddr=server,port=port,browserName='firefox')
   capture.output(mybrowser$open(),file='blank')
   mybrowser$navigate("http://www.candidagenome.org/cgi-bin/GO/goTermFinder")
   
   message('Inputting Gene List')
-  genesList <- sapply(geneList,function(x){paste0(x," ")})
+  genesList <- sapply(geneList2,function(x){paste0(x," ")})
   names(genesList) <- NULL
   textarea <- mybrowser$findElement(using='css selector','textarea')
   textarea$sendKeysToElement(genesList)
@@ -70,22 +70,30 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   }
   
   message("Executing Search")
-  #button <- mybrowser$findElement(using='name','Submit')
-  #button$sendKeysToElement(list("\uE007"))
+  
+  #selenium/standalone-firefox does not wait for page to finish loading
+  #although standalone-chrome does, selenium has a max timeout of 10 minutes
+  #after which the session is terminated if no additional calls to sesison are made. 
+  
+  #below method works for standalone-chrome, but deprecated due to max session 
+  #timeout restriction. 
+  
+  ### Does anyone know how to launch standalone-chrome in docker with a higher
+  # max session timeout?
+  #mybrowser$setTimeout(type='page load',milliseconds = 2400000)
+  #mybrowser$setTimeout(type='implicit',milliseconds = 2400000)
+  #mybrowser$setTimeout(type='script',milliseconds = 2400000)
+  
   button <- mybrowser$findElement(using='xpath','//*[(@id = "paddedtbl") and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//input[(((count(preceding-sibling::*) + 1) = 1) and parent::*)]')
   button$sendKeysToElement(list("\uE007"))
   
   message("Waiting for Results")
-  #couldn't get implicit timeout to work, causes Selenium Server to time out
-  #and remove session
-  #mybrowser$setTimeout(type='implicit',milliseconds = 1200000)
-  #temp <- suppressMessages(try(mybrowser$findElement(using='css selector','p font'),silent=T))
-  #mybrowser$setTimeout(type='implicit',milliseconds = 0)
   
-  #artificial method to hold script until final results page loads, with max timeout of 10 minutes.
+  # method below is for standalone-firefox - soft ping session every 15 seconds
+  #to check if final page has reloaded + prevent session from timing out.
   pageLoad <- FALSE
   while(pageLoad==FALSE){
-    Sys.sleep(5)
+    Sys.sleep(15)
     temp <- suppressMessages(try(mybrowser$findElement(using='css selector','p font'),silent=T))
     if(class(temp)!="try-error"){
       pageLoad <- TRUE
