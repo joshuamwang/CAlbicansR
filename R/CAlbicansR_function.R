@@ -53,20 +53,26 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   message(paste0('Opening Browser Connection: ',server,":",port))
   mybrowser <- remoteDriver(remoteServerAddr=server,port=port,browserName='firefox')
   capture.output(mybrowser$open(),file='blank')
+  Sys.sleep(2)
+  
   mybrowser$navigate("http://www.candidagenome.org/cgi-bin/GO/goTermFinder")
+  Sys.sleep(2)
   
   message('Inputting Gene List')
   genesList <- sapply(geneList,function(x){paste0(x," ")})
   names(genesList) <- NULL
   textarea <- mybrowser$findElement(using='css selector','textarea')
   textarea$sendKeysToElement(genesList)
+  Sys.sleep(2)
   
   if(type=='F'){
     radio <- mybrowser$findElement(using='xpath','//label[(((count(preceding-sibling::*) + 1) = 3) and parent::*)]')
     radio$clickElement()
+    Sys.sleep(2)
   }else if(type=='C'){
     radio <- mybrowser$findElement(using='xpath','//b//label[(((count(preceding-sibling::*) + 1) = 5) and parent::*)]')
     radio$clickElement()
+    Sys.sleep(2)
   }
   
   message("Executing Search")
@@ -100,6 +106,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
     }
   }
   
+  Sys.sleep(2)
   table <- suppressMessages(try(mybrowser$findElement(using='xpath','//*[(@id = "paddedtbl")]'),silent=T))
   message("Cleaning Results")
   if(typeof(table)=="S4"){
@@ -113,6 +120,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   }
   
   mybrowser$close()
+  Sys.sleep(2)
   
   return(pValues)
 }
