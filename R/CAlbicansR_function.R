@@ -52,27 +52,28 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   
   message(paste0('Opening Browser Connection: ',server,":",port))
   mybrowser <- remoteDriver(remoteServerAddr=server,port=port,browserName='firefox')
+  Sys.sleep(5)
   capture.output(mybrowser$open(),file='blank')
-  Sys.sleep(2)
+  Sys.sleep(5)
   
   mybrowser$navigate("http://www.candidagenome.org/cgi-bin/GO/goTermFinder")
-  Sys.sleep(2)
+  Sys.sleep(5)
   
   message('Inputting Gene List')
   genesList <- sapply(geneList,function(x){paste0(x," ")})
   names(genesList) <- NULL
   textarea <- mybrowser$findElement(using='css selector','textarea')
   textarea$sendKeysToElement(genesList)
-  Sys.sleep(2)
+  Sys.sleep(5)
   
   if(type=='F'){
     radio <- mybrowser$findElement(using='xpath','//label[(((count(preceding-sibling::*) + 1) = 3) and parent::*)]')
     radio$clickElement()
-    Sys.sleep(2)
+    Sys.sleep(5)
   }else if(type=='C'){
     radio <- mybrowser$findElement(using='xpath','//b//label[(((count(preceding-sibling::*) + 1) = 5) and parent::*)]')
     radio$clickElement()
-    Sys.sleep(2)
+    Sys.sleep(5)
   }
   
   message("Executing Search")
@@ -120,7 +121,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   }
   
   mybrowser$close()
-  Sys.sleep(2)
+  Sys.sleep(5)
   
   return(pValues)
 }
