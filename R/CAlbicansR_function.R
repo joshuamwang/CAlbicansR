@@ -119,6 +119,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
     pValues <- NULL
   }
   
+  Sys.sleep(3)
   mybrowser$quit()
   Sys.sleep(3)
   
