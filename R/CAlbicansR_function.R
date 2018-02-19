@@ -106,6 +106,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
     }
   }
   
+  Sys.sleep(3)
   table <- suppressMessages(try(mybrowser$findElement(using='xpath','//*[(@id = "paddedtbl")]'),silent=T))
   message("Cleaning Results")
   if(typeof(table)=="S4"){
