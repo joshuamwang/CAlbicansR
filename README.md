@@ -18,7 +18,7 @@ library('CAlbicansR')
 sudo docker pull selenium/standalone-firefox-debug
 
 # to execute
-sudo docker run -d -p 4445:4444 -p 5901:5900 -v /dev/shm:/dev/shm selenium/standalone-firefox-debug
+sudo docker run -d -p 4445:4444 -p 5901:5900 --shm-size=4g -e JAVA_OPTS=-Xmx4096m selenium/standalone-firefox-debug
 ```
 This configuration binds the [Selenium](http://docs.seleniumhq.org/) port to 4445 and allows for [VNC viewer](https://www.realvnc.com/en/connect/download/viewer/) access for debugging on port 5901. More information on debugging [Selenium](http://docs.seleniumhq.org/) with [VNC viewer](https://www.realvnc.com/en/connect/download/viewer/) is available [here](https://github.com/SeleniumHQ/docker-selenium#debugging). 
 
