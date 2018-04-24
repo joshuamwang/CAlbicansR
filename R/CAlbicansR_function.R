@@ -150,4 +150,5 @@ runGOEnrichment <- function(geneList=NULL,type='P',
     Sys.sleep(3)
     
     return('No Significant Ontology')
+  }
 }
