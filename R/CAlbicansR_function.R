@@ -120,6 +120,28 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   }
   
   Sys.sleep(3)
+  
+  if(fileName!=F){
+    output <- data.frame(matrix(0,nrow=length(goTerms),ncol=6))
+    colnames(output) <- c('GO_term','Cluster frequency','Background frequency',
+                          'Corrected P-value','False discovery rate',
+                          'Gene(s) annotated to the term')
+    for(index in 1:length(goTerms)){
+      split <- strsplit(goTerms[index],split=' ')[[1]]
+      
+      term <- paste0(split[1:grep("\\|",split)-1],collapse=" ")
+      freq1 <- paste0(split[(grep("\\|",split)+2):(grep("\\|",split)+7)],collapse=" ")
+      freq2 <- paste0(split[(grep("\\|",split)+8):(grep("\\|",split)+14)],collapse=" ")
+      p <- split[(grep("\\|",split)+15)]
+      q <- split[(grep("\\|",split)+16)]
+      genes <- paste0(split[(grep("\\|",split)+17):length(split)],collapse='')
+      
+      output[index,] <- cbind(term,freq1,freq2,p,q,genes)
+    }
+    
+    write.csv(output,fileName,row.names=F)
+  }
+  
   mybrowser$quit()
   Sys.sleep(3)
   
