@@ -121,7 +121,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   
   Sys.sleep(3)
   
-  if(fileName!=F & length(goTerms)!=0){
+  if(fileName!=F & exists('goTerms')){
     output <- data.frame(matrix(0,nrow=length(goTerms),ncol=6))
     colnames(output) <- c('GO_term','Cluster frequency','Background frequency',
                           'Corrected P-value','False discovery rate',
