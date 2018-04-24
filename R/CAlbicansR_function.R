@@ -42,7 +42,7 @@ orfToName <- function(orfList){
 #' runGOEnrichment(geneList,type='F')
 runGOEnrichment <- function(geneList=NULL,type='P',
                              server='selenium.joshuawang.com',
-                             port=4445){
+                             port=4445,fileName=F){
   if(length(geneList)<2){
     return(NULL)
     #stop("Please enter at least 2 genes.")
