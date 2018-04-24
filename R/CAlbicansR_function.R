@@ -59,7 +59,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   Sys.sleep(2)
   
   message('Inputting Gene List')
-  genesList <- sapply(geneList,function(x){paste0(x," ")})
+  genesList <- sapply(geneList[!geneList%in%genesToRemove],function(x){paste0(x," ")})
   names(genesList) <- NULL
   textarea <- mybrowser$findElement(using='css selector','textarea')
   textarea$sendKeysToElement(genesList)
