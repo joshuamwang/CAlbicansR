@@ -121,7 +121,7 @@ runGOEnrichment <- function(geneList=NULL,type='P',
   
   Sys.sleep(3)
   
-  if(fileName!=F){
+  if(fileName!=F & length(goTerms)!=0){
     output <- data.frame(matrix(0,nrow=length(goTerms),ncol=6))
     colnames(output) <- c('GO_term','Cluster frequency','Background frequency',
                           'Corrected P-value','False discovery rate',
@@ -140,10 +140,14 @@ runGOEnrichment <- function(geneList=NULL,type='P',
     }
     
     write.csv(output,fileName,row.names=F)
-  }
+    
+    mybrowser$quit()
+    Sys.sleep(3)
   
-  mybrowser$quit()
-  Sys.sleep(3)
-  
-  return(pValues)
+    return(pValues)
+  }else{
+    mybrowser$quit()
+    Sys.sleep(3)
+    
+    return('No Significant Ontology')
 }
